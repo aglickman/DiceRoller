@@ -2,12 +2,13 @@ package com.example.diceroller
 
 import android.os.Bundle
 import android.widget.Button
-import android.widget.TextView
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import java.lang.Double.parseDouble
 
 class MainActivity : AppCompatActivity() {
+
+    lateinit var diceImage: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,35 +21,45 @@ class MainActivity : AppCompatActivity() {
         countUpButton.setOnClickListener {
             countUpPressed()
         }
+        diceImage = findViewById(R.id.dice_image)
+        diceImage.setTag(R.drawable.empty_dice)
     }
 
     private fun rollDice() {
-        val resultText: TextView = findViewById(R.id.result_text)
-        resultText.text = (1..6).random().toString()
+        val drawableResource = when ((1..6).random()) {
+            1 -> R.drawable.dice_1
+            2 -> R.drawable.dice_2
+            3 -> R.drawable.dice_3
+            4 -> R.drawable.dice_4
+            5 -> R.drawable.dice_5
+            else -> R.drawable.dice_6
+        }
+        diceImage.setImageResource(drawableResource)
+        diceImage.setTag(drawableResource)
         Toast.makeText(this, "Roll dice pressed!", Toast.LENGTH_SHORT).show()
     }
 
     private fun countUpPressed() {
-        val resultText: TextView = findViewById(R.id.result_text)
+        if(diceImage.getTag() == R.drawable.empty_dice || diceImage.getTag() == R.drawable.dice_1) {
+            diceImage.setImageResource(R.drawable.dice_2)
+            diceImage.setTag(R.drawable.dice_2)
+        }
+        else if(diceImage.getTag() == R.drawable.dice_2) {
+            diceImage.setImageResource(R.drawable.dice_3)
+            diceImage.setTag(R.drawable.dice_3)
+        }
+        else if(diceImage.getTag() == R.drawable.dice_3) {
+            diceImage.setImageResource(R.drawable.dice_4)
+            diceImage.setTag(R.drawable.dice_4)
+        }
+        else if(diceImage.getTag() == R.drawable.dice_4) {
+            diceImage.setImageResource(R.drawable.dice_5)
+            diceImage.setTag(R.drawable.dice_5)
+        }
+        else if(diceImage.getTag() == R.drawable.dice_5) {
+            diceImage.setImageResource(R.drawable.dice_6)
+            diceImage.setTag(R.drawable.dice_6)
+        }
         Toast.makeText(this, "Count up pressed!", Toast.LENGTH_SHORT).show()
-        if (!checkNumeric(resultText.text.toString())) {
-            resultText.text = "1"
-        }
-        else if(resultText.text.toString().toInt() < 6) {
-            resultText.text = (resultText.text.toString().toInt() + 1).toString()
-        }
     }
-
-    private fun checkNumeric(strCheck: String): Boolean {
-        var numeric = true
-
-        try {
-            val num = parseDouble(strCheck)
-        } catch (e: NumberFormatException) {
-            numeric = false
-        }
-
-        return numeric
-    }
-
 }
